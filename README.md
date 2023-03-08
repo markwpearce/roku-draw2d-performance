@@ -12,6 +12,9 @@ npm install
 npm run build
 ```
 
+This will create the file `./out/roku-draw2d-performance.zip`, that can be sideloaded on a Roku.
+
+
 ## Running from VSCode
 
 1. Run debug configuration `BrightScript Debug: Launch`, and input appropriate details each time you debug,
