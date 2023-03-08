@@ -1,0 +1,22 @@
+{
+  "name": "roku-draw2d-performance",
+  "version": "0.0.1",
+  "description": "Benchmarking App to test Draw2d performance on Roku",
+  "author": "Mark Pearce",
+  "keywords": [
+    "roku",
+    "brightscript",
+    "benchmark",
+    "draw2d"
+  ],
+  "scripts": {
+    "build": "bsc"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "brighterscript": "^0.61.3"
+  }
+}
