@@ -36,7 +36,7 @@ Each line of output contains the following details:
 - average test operations per frame
 - average operations per second
 - average length of time for swapping frames
-- result of dynamically scaling the number of operations per second
+- result of dynamically scaling the number of operations to meet the fps goal
 
 ## Install
 
