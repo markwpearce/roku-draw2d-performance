@@ -4,7 +4,7 @@ Benchmarking App for Roku that runs through a series of visual tests for the Rok
 
 ![Screenshot](./screenshot.jpg)
 
-During each test, the test name will appear in the upper right corner, and teh current number of operations per second is displayed in the bottom right corner.
+During each test, the test name will appear in the upper right corner, and the current number of operations per second is displayed in the bottom right corner.
 
 This app will dynamically scale the amount of draw operations to try to match 30 frames per second.
 
