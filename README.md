@@ -1,6 +1,6 @@
 # Roku Draw2d Performance Benchmarking App
 
-Benchmarking App for Roku that runs through a series of visual tests for the Roku to run through.
+Benchmarking App for Roku that runs through a series of visual tests for the Roku.
 
 ![Screenshot](./screenshot.jpg)
 
