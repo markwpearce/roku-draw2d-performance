@@ -1,9 +1,9 @@
-function getColor()
-  red% = rnd(256)
-  green% = rnd(256)
-  blue% = rnd(256)
-  color% = (red% << 24) + (green% << 16) + (blue% << 8) + 255
-  return color% + 256
+function getColor(r = 255, g = 255, b = 255, a = 255)
+  red% = rnd(r)
+  green% = rnd(g)
+  blue% = rnd(b)
+  color% = (red% << 24) + (green% << 16) + (blue% << 8) + a
+  return color%
 end function
 
 function max(a, b)
@@ -42,3 +42,12 @@ function intScaleIfNeeded(value, testVal, lowerBound, upperBound)
   end if
   return value
 end function
+
+
+
+sub drawTextWithBackground(text, x, y, width)
+  height = 50
+  offset = 5
+  m.screen.drawRect(x - offset, y - offset, width + 2 * offset, height, &hFF)
+  m.screen.drawText(text, x, y, &hFFFFFFFF, m.defaultFont)
+end sub

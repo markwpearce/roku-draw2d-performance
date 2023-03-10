@@ -1,4 +1,24 @@
 
+sub recursion()
+  if invalid = m.recursionTests
+    m.recursionTests = 0
+  end if
+
+  subTract1(50)
+  m.recursionTests += 1
+  drawTextWithBackground("Tests: " + m.recursionTests.toStr(), 50, 100, 300)
+
+end sub
+
+
+
+function subTract1(num)
+  if num > 0
+    return subtract1(num - 1)
+  end if
+  return num + 1
+end function
+
 
 sub drawLine()
   halfW = m.screenW / 2
@@ -132,3 +152,39 @@ sub reuseBitmapAndRegion()
   y1 = rnd(m.screenH)
   m.screen.drawObject(x1, y1, m.tempRegionReuse)
 end sub
+
+
+
+
+
+function testCompositorWrap()
+  if invalid = m.testCompositorWrapSetup
+    screen = m.screen
+    black = &hFF'RGBA
+    m.compositor = CreateObject("roCompositor")
+    m.compositor.SetDrawTo(screen, black)
+    offset = 100
+
+    bigbm = CreateObject("roBitmap", "pkg:/images/4k-image.jpg")
+    region = CreateObject("roRegion", bigbm, offset, offset, m.screenW - 2 * offset, m.screenH - 2 * offset)
+    region.SetWrap(True)
+
+    m.view_sprites = []
+    m.view_sprites.push(m.compositor.NewSprite(100, 100, region))
+
+    m.testCompositorWrapSetup = true
+  end if
+
+  offsetCompositorSprites(m.view_sprites, 1, 1)
+end function
+
+
+function offsetCompositorSprites(view_sprites, xd, yd)
+  offset = 100
+  rectOutline = 4
+  m.screen.drawRect(offset - rectOutline, offset - rectOutline, m.screenW - 2 * offset + 2 * rectOutline, m.screenH - 2 * offset + 2 * rectOutline, &hFF0000FF)
+  for each sprite in view_sprites
+    sprite.OffsetRegion(xd, yd, 0, 0)
+  end for
+  m.compositor.draw()
+end function
