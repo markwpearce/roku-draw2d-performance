@@ -1,26 +1,5 @@
 
-sub recursion()
-  if invalid = m.recursionTests
-    m.recursionTests = 0
-  end if
-
-  subTract1(50)
-  m.recursionTests += 1
-  drawTextWithBackground("Tests: " + m.recursionTests.toStr(), 50, 100, 300)
-
-end sub
-
-
-
-function subTract1(num)
-  if num > 0
-    return subtract1(num - 1)
-  end if
-  return num + 1
-end function
-
-
-sub drawLine()
+sub drawLine(testCount as integer, testData as object)
   halfW = m.screenW / 2
   halfH = m.screenH / 2
 
@@ -33,7 +12,7 @@ sub drawLine()
 end sub
 
 
-sub drawRect()
+sub drawRect(testCount as integer, testData as object)
   halfW = m.screenW / 2
   halfH = m.screenH / 2
 
@@ -46,8 +25,7 @@ sub drawRect()
 end sub
 
 
-
-sub drawPoint()
+sub drawPoint(testCount as integer, testData as object)
   x1 = rnd(m.screenW)
   y1 = rnd(m.screenH)
   size = 10
@@ -55,21 +33,21 @@ sub drawPoint()
   m.screen.drawPoint(x1, y1, size, color)
 end sub
 
-sub drawObject()
+sub drawObject(testCount as integer, testData as object)
   x1 = rnd(m.screenW)
   y1 = rnd(m.screenH)
   m.screen.drawObject(x1, y1, m.testBitmap)
 end sub
 
 
-sub drawRotatedObject()
+sub drawRotatedObject(testCount as integer, testData as object)
   x1 = rnd(m.screenW)
   y1 = rnd(m.screenH)
   theta = rnd(360)
   m.screen.drawRotatedObject(x1, y1, theta, m.testBitmap)
 end sub
 
-sub drawScaledObject()
+sub drawScaledObject(testCount as integer, testData as object)
   x1 = rnd(m.screenW)
   y1 = rnd(m.screenH)
   scaleX = 5 * rnd(0)
@@ -77,7 +55,7 @@ sub drawScaledObject()
   m.screen.drawScaledObject(x1, y1, scaleX, scaleY, m.testBitmap)
 end sub
 
-sub createTempBitmap()
+sub createTempBitmap(testCount as integer, testData as object)
   halfW = m.screenW / 2
   halfH = m.screenH / 2
   tempBitmap = CreateObject("roBitmap", {width: halfW, height: halfH, AlphaEnable: true})
@@ -89,7 +67,7 @@ sub createTempBitmap()
   m.screen.drawObject(x1, y1, tempBitmap)
 end sub
 
-sub createTempBitmapAndRegion()
+sub createTempBitmapAndRegion(testCount as integer, testData as object)
   halfW = m.screenW / 2
   halfH = m.screenH / 2
   tempBitmap = CreateObject("roBitmap", {width: halfW, height: halfH, AlphaEnable: true})
@@ -102,30 +80,30 @@ sub createTempBitmapAndRegion()
   m.screen.drawObject(x1, y1, tempRegion)
 end sub
 
-sub reuseBitmap()
+sub reuseBitmap(testCount as integer, testData as object)
   halfW = m.screenW / 2
   halfH = m.screenH / 2
-  if invalid = m.tempBitmapReuse
-    m.tempBitmapReuse = CreateObject("roBitmap", {width: halfW, height: halfH, AlphaEnable: true})
+  if invalid = testData.tempBitmapReuse
+    testData.tempBitmapReuse = CreateObject("roBitmap", {width: halfW, height: halfH, AlphaEnable: true})
   else
-    m.tempBitmapReuse.clear(0)
+    testData.tempBitmapReuse.clear(0)
   end if
   color = getColor()
-  m.tempBitmapReuse.drawRect(10, 10, halfW - 20, halfH - 20, color)
+  testData.tempBitmapReuse.drawRect(10, 10, halfW - 20, halfH - 20, color)
   x1 = rnd(m.screenW)
   y1 = rnd(m.screenH)
-  m.screen.drawObject(x1, y1, m.tempBitmapReuse)
+  m.screen.drawObject(x1, y1, testData.tempBitmapReuse)
 end sub
 
-sub reuseBitmapCreateRegion()
+sub reuseBitmapCreateRegion(testCount as integer, testData as object)
   halfW = m.screenW / 2
   halfH = m.screenH / 2
-  if invalid = m.tempBitmapCreateRegion
-    m.tempBitmapCreateRegion = CreateObject("roBitmap", {width: halfW, height: halfH, AlphaEnable: true})
+  if invalid = testData.tempBitmapCreateRegion
+    testData.tempBitmapCreateRegion = CreateObject("roBitmap", {width: halfW, height: halfH, AlphaEnable: true})
   else
-    m.tempBitmapCreateRegion.clear(0)
+    testData.tempBitmapCreateRegion.clear(0)
   end if
-  tempRegion = CreateObject("roRegion", m.tempBitmapCreateRegion, 0, 0, halfW, halfH)
+  tempRegion = CreateObject("roRegion", testData.tempBitmapCreateRegion, 0, 0, halfW, halfH)
   color = getColor()
   tempRegion.drawRect(10, 10, halfW - 20, halfH - 20, color)
 
@@ -134,57 +112,50 @@ sub reuseBitmapCreateRegion()
   m.screen.drawObject(x1, y1, tempRegion)
 end sub
 
-sub reuseBitmapAndRegion()
+sub reuseBitmapAndRegion(testCount as integer, testData as object)
   halfW = m.screenW / 2
   halfH = m.screenH / 2
-  if invalid = m.tempBitmapReuseBoth
-    m.tempBitmapReuseBoth = CreateObject("roBitmap", {width: halfW, height: halfH, AlphaEnable: true})
+  if invalid = testData.tempBitmapReuseBoth
+    testData.tempBitmapReuseBoth = CreateObject("roBitmap", {width: halfW, height: halfH, AlphaEnable: true})
   end if
-  if invalid = m.tempRegionReuse
-    m.tempRegionReuse = CreateObject("roRegion", m.tempBitmapReuseBoth, 0, 0, halfW, halfH)
+  if invalid = testData.tempRegionReuse
+    testData.tempRegionReuse = CreateObject("roRegion", testData.tempBitmapReuseBoth, 0, 0, halfW, halfH)
   else
-    m.tempRegionReuse.clear(0)
+    testData.tempRegionReuse.clear(0)
   end if
   color = getColor()
-  m.tempRegionReuse.drawRect(10, 10, halfW - 20, halfH - 20, color)
+  testData.tempRegionReuse.drawRect(10, 10, halfW - 20, halfH - 20, color)
 
   x1 = rnd(m.screenW)
   y1 = rnd(m.screenH)
-  m.screen.drawObject(x1, y1, m.tempRegionReuse)
+  m.screen.drawObject(x1, y1, testData.tempRegionReuse)
 end sub
 
 
 
 
 
-function testCompositorWrap()
-  if invalid = m.testCompositorWrapSetup
+function testCompositorWrap(testCount as integer, testData as object)
+  if invalid = testData.testCompositorWrapSetup
     screen = m.screen
     black = &hFF'RGBA
-    m.compositor = CreateObject("roCompositor")
-    m.compositor.SetDrawTo(screen, black)
+    testData.compositor = CreateObject("roCompositor")
+    testData.compositor.SetDrawTo(screen, black)
     offset = 100
 
     bigbm = CreateObject("roBitmap", "pkg:/images/4k-image.jpg")
     region = CreateObject("roRegion", bigbm, offset, offset, m.screenW - 2 * offset, m.screenH - 2 * offset)
     region.SetWrap(True)
 
-    m.view_sprites = []
-    m.view_sprites.push(m.compositor.NewSprite(100, 100, region))
+    testData.view_sprites = []
+    testData.view_sprites.push(testData.compositor.NewSprite(100, 100, region))
 
-    m.testCompositorWrapSetup = true
+    testData.testCompositorWrapSetup = true
   end if
-
-  offsetCompositorSprites(m.view_sprites, 1, 1)
-end function
-
-
-function offsetCompositorSprites(view_sprites, xd, yd)
   offset = 100
   rectOutline = 4
   m.screen.drawRect(offset - rectOutline, offset - rectOutline, m.screenW - 2 * offset + 2 * rectOutline, m.screenH - 2 * offset + 2 * rectOutline, &hFF0000FF)
-  for each sprite in view_sprites
-    sprite.OffsetRegion(xd, yd, 0, 0)
-  end for
-  m.compositor.draw()
+  offsetCompositorSprites(testData.compositor, testData.view_sprites, 1, 1)
 end function
+
+
