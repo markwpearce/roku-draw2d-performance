@@ -16,21 +16,35 @@ sub main()
   m.screen.setAlphaEnable(true)
   ? "Roku Draw2d Performance Benchmark Tool - v";appInfo.GetVersion()
 
-  runBenchmark("Recursion", recursion, repeat / 10)
-  runBenchmark("DrawLine", drawLine, repeat)
-  runBenchmark("DrawRect", drawRect, repeat)
-  runBenchmark("DrawPoint", drawPoint, repeat)
-  m.screen.setAlphaEnable(false)
-  runBenchmark("DrawObject (no-Alpha)", drawObject, repeat)
-  m.screen.setAlphaEnable(true)
-  runBenchmark("DrawObject (with-Alpha)", drawObject, repeat)
-  runBenchmark("DrawRotatedObject", drawRotatedObject, repeat)
-  runBenchmark("DrawScaledObject", drawScaledObject, repeat)
-  runBenchmark("CreateTempBitmap", createTempBitmap, repeat / 10)
-  runBenchmark("ReuseBitmap", reuseBitmap, repeat / 10)
-  runBenchmark("CreateTempBitmapAndRegion", createTempBitmapAndRegion, repeat / 10)
-  runBenchmark("ReuseBitmapAndRegion", reuseBitmapAndRegion, repeat / 10)
-  runBenchmark("CompositorWrap", testCompositorWrap, repeat / 10)
+  doFunctionSpeedTests = true
+  doDrawTests = true
+
+  m.functionPerfCount = 50
+  if doFunctionSpeedTests
+    runBenchmark("RecursionFunction", recursionFunction, repeat / 10)
+    runBenchmark("RecursionSub", recursionSub, repeat / 10)
+    runBenchmark("Loop", loop, repeat / 10)
+    runBenchmark("LoopFuncCall", loopFuncCall, repeat / 10)
+    runBenchmark("LoopFuncCallNoReturn", loopFuncCallNoReturn, repeat / 10)
+    runBenchmark("LoopSubCall", loopSubCall, repeat / 10)
+    runBenchmark("ClassCreate", classCreate, repeat / 10)
+  end if
+  if doDrawTests
+    runBenchmark("DrawLine", drawLine, repeat)
+    runBenchmark("DrawRect", drawRect, repeat)
+    runBenchmark("DrawPoint", drawPoint, repeat)
+    m.screen.setAlphaEnable(false)
+    runBenchmark("DrawObject (no-Alpha)", drawObject, repeat)
+    m.screen.setAlphaEnable(true)
+    runBenchmark("DrawObject (with-Alpha)", drawObject, repeat)
+    runBenchmark("DrawRotatedObject", drawRotatedObject, repeat)
+    runBenchmark("DrawScaledObject", drawScaledObject, repeat)
+    runBenchmark("CreateTempBitmap", createTempBitmap, repeat / 10)
+    runBenchmark("ReuseBitmap", reuseBitmap, repeat / 10)
+    runBenchmark("CreateTempBitmapAndRegion", createTempBitmapAndRegion, repeat / 10)
+    runBenchmark("ReuseBitmapAndRegion", reuseBitmapAndRegion, repeat / 10)
+    runBenchmark("CompositorWrap", testCompositorWrap, repeat / 10)
+  end if
 end sub
 
 
@@ -46,8 +60,10 @@ sub runBenchmark(benchmarkName, testFunction, repeat, dynamicallyScale = true)
   opsPerSwap = 100
   firstFrame = true
   opsSinceSwap = 0
+  testData = {}
+
   while (i < repeat)
-    testFunction()
+    testFunction(i, testData)
 
     timeForFrame = frameTimer.totalMilliseconds()
     if timeForFrame > msPerSwapTarget or (dynamicallyScale and not firstFrame and opsSinceSwap >= opsPerSwap)
@@ -65,7 +81,7 @@ sub runBenchmark(benchmarkName, testFunction, repeat, dynamicallyScale = true)
       swapTime = frameTimer.totalMilliseconds()
       if dynamicallyScale
         totalFrameTime = timeForFrame + swapTime
-        opsPerSwap = intScaleIfNeeded(opsPerSwap, totalFrameTime, msPerSwapTarget, 1.5 * msPerSwapTarget)
+        opsPerSwap = intScaleIfNeeded(opsPerSwap, totalFrameTime, msPerSwapTarget)
       end if
       totalSwapTime += swapTime
       frameTimer.mark()
@@ -76,6 +92,10 @@ sub runBenchmark(benchmarkName, testFunction, repeat, dynamicallyScale = true)
   end while
   if opsPerSwap < 0
     opsPerSwap = opsSinceSwap
+  end if
+  if frameCount = 0
+    m.screen.swapBuffers()
+    frameCount = 1
   end if
   totalTime = totalTimer.totalMilliseconds()
   actualFrameTime = cint(totalTime / frameCount)
