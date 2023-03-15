@@ -131,7 +131,7 @@ sub runBenchmark(benchmarkName, testFunction, repeat, dynamicallyScale = true)
     frameCount = 1
   end if
   if testNotSupported
-    ? benchmarkName;": skipped, not supported"
+    ? benchmarkName;": skipped - not supported"
     return
   end if
   totalTime = totalTimer.totalMilliseconds()
