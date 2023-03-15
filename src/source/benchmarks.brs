@@ -132,30 +132,92 @@ sub reuseBitmapAndRegion(testCount as integer, testData as object)
 end sub
 
 
-
-
-
-function testCompositorWrap(testCount as integer, testData as object)
-  if invalid = testData.testCompositorWrapSetup
-    screen = m.screen
-    black = &hFF'RGBA
-    testData.compositor = CreateObject("roCompositor")
-    testData.compositor.SetDrawTo(screen, black)
-    offset = 100
-
-    bigbm = CreateObject("roBitmap", "pkg:/images/4k-image.jpg")
-    region = CreateObject("roRegion", bigbm, offset, offset, m.screenW - 2 * offset, m.screenH - 2 * offset)
-    region.SetWrap(True)
-
-    testData.view_sprites = []
-    testData.view_sprites.push(testData.compositor.NewSprite(100, 100, region))
-
-    testData.testCompositorWrapSetup = true
-  end if
-  offset = 100
-  rectOutline = 4
-  m.screen.drawRect(offset - rectOutline, offset - rectOutline, m.screenW - 2 * offset + 2 * rectOutline, m.screenH - 2 * offset + 2 * rectOutline, &hFF0000FF)
-  offsetCompositorSprites(testData.compositor, testData.view_sprites, 1, 1)
+function testCompositorWrapHd(testCount as integer, testData as object)
+  return testCompositorWrapMethod(testData, "pkg:/images/hd-image.jpg")
 end function
 
+function testCompositorWrapFhd(testCount as integer, testData as object)
+  return testCompositorWrapMethod(testData, "pkg:/images/fhd-image.jpg")
+end function
+
+function testCompositorWrap4k(testCount as integer, testData as object)
+  return testCompositorWrapMethod(testData, "pkg:/images/4k-image.jpg")
+end function
+
+function testCompositorSprites(testCount as integer, testData as object)
+  if invalid = testData.testCompositorSpritesSetup
+    testData.compositor = CreateObject("roCompositor")
+    testData.drawBmp = CreateObject("roBitmap", {width: m.screenW, height: m.screenH, AlphaEnable: true})
+    if invalid = testData.drawBmp
+      return false
+    end if
+    testData.compositor.SetDrawTo(testData.drawBmp, 0)
+
+    cellRegions = getWalkingSpriteCells(9)
+    staticRegion = getWalkingSpriteCells(1)
+    spriteCount = m.functionPerfCount
+    testData.animatedSprites = []
+    testData.staticSprites = []
+    for i = 0 to spriteCount / 2
+      x = rnd(m.screenW)
+      y = rnd(m.screenH)
+      z = i
+      testData.animatedSprites.push(testData.compositor.NewAnimatedSprite(x, y, cellRegions, z))
+    end for
+    for i = 0 to spriteCount / 2
+      x = rnd(m.screenW)
+      y = rnd(m.screenH)
+      z = i
+      testData.staticSprites.push(testData.compositor.NewSprite(x, y, staticRegion[0], z))
+    end for
+
+    testData.testCompositorSpritesSetup = true
+  end if
+  testData.compositor.animationTick(1)
+  moveCompositorSprites(testData.animatedSprites, 2, 0)
+
+  testData.drawBmp.clear(&hFF)
+  testData.compositor.DrawAll()
+  m.screen.drawObject(0, 0, testData.drawBmp)
+end function
+
+function testManualSprites(testCount as integer, testData as object)
+  if invalid = testData.testManualSpritesSetup
+    testData.drawBmp = CreateObject("roBitmap", {width: m.screenW, height: m.screenH, AlphaEnable: true})
+    if invalid = testData.drawBmp
+      return false
+    end if
+    cellRegions = getWalkingSpriteCells(9)
+    staticRegion = getWalkingSpriteCells(1)
+    spriteCount = m.functionPerfCount
+    testData.animatedSprites = []
+    testData.staticSprites = []
+    for i = 0 to spriteCount / 2
+      x = rnd(m.screenW)
+      y = rnd(m.screenH)
+      testData.animatedSprites.push(createSpriteObject(x, y, cellRegions))
+    end for
+    for i = 0 to spriteCount / 2
+      x = rnd(m.screenW)
+      y = rnd(m.screenH)
+      testData.staticSprites.push(createSpriteObject(x, y, staticRegion))
+    end for
+    testData.testManualSpritesSetup = true
+  end if
+
+  testData.drawBmp.clear(&hFF)
+  for each sprite in testData.animatedSprites
+    sprite.activeRegion += 1
+    if sprite.activeRegion >= sprite.regions.count()
+      sprite.activeRegion = 0
+    end if
+    moveConstrainSprite(sprite, 2, 0)
+    testData.drawBmp.drawObject(sprite.x, sprite.y, sprite.regions[sprite.activeRegion])
+  end for
+  for each sprite in testData.staticSprites
+    testData.drawBmp.drawObject(sprite.x, sprite.y, sprite.regions[sprite.activeRegion])
+  end for
+
+  m.screen.drawObject(0, 0, testData.drawBmp)
+end function
 
