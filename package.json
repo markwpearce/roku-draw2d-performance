@@ -1,6 +1,6 @@
 {
   "name": "roku-draw2d-performance",
-  "version": "0.2.1",
+  "version": "0.3.1",
   "description": "Benchmarking App to test Draw2d performance on Roku",
   "author": "Mark Pearce",
   "keywords": [

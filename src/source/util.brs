@@ -36,9 +36,13 @@ function scaleUp(value, factor = 1.1)
 end function
 
 
-function intScaleIfNeeded(value, testVal, target, buffer = 0.25)
+function intScaleIfNeeded(value, testVal, target, buffer = 0.5)
+  if testVal = 0
+    value = cint(scaleUp(value))
+    return value
+  end if
   factor = target / testVal
-  lowerBound = target * (1 - buffer)
+  lowerBound = target '* (1 - buffer)
   upperBound = target * (1 + buffer)
   if testVal > upperBound
     value = cint(scaleDown(value, factor))
@@ -96,9 +100,97 @@ function getClass()
   return klass
 end function
 
-function offsetCompositorSprites(compositor, view_sprites, xd, yd)
+
+function testCompositorWrapMethod(testData as object, bmpName as string)
+  offset = 100
+  if invalid = testData.setupComplete
+    testData.compositor = CreateObject("roCompositor")
+    testData.compositor.SetDrawTo(m.screen, &hFF)
+    testData.view_sprites = []
+    bigBmp = CreateObject("roBitmap", bmpName)
+    if invalid = bigBmp
+      return false
+    end if
+    region = CreateObject("roRegion", bigBmp, offset, offset, m.screenW - 2 * offset, m.screenH - 2 * offset)
+    region.SetWrap(True)
+    testData.view_sprites.push(testData.compositor.NewSprite(offset, offset, region))
+    testData.setupComplete = true
+  end if
+  rectOutline = 4
+  m.screen.drawRect(offset - rectOutline, offset - rectOutline, m.screenW - 2 * offset + 2 * rectOutline, m.screenH - 2 * offset + 2 * rectOutline, &hFF0000FF)
+  offsetCompositorSprites(testData.view_sprites, 1, 1)
+  testData.compositor.draw()
+  return true
+end function
+
+sub offsetCompositorSprites(view_sprites, xd, yd)
   for each sprite in view_sprites
     sprite.OffsetRegion(xd, yd, 0, 0)
   end for
-  compositor.draw()
+end sub
+
+sub moveCompositorSprites(view_sprites, xd, yd)
+  for each sprite in view_sprites
+    moveConstrainSprite(sprite, xd, yd)
+  end for
+end sub
+
+sub moveConstrainSprite(sprite, xd, yd)
+  currentX = sprite.GetX()
+  currentY = sprite.GetY()
+
+  x = currentX + xd
+  y = currentY + yd
+
+  if x > m.screenW
+    x = 0
+  else if x < 0
+    x = m.screenW
+  end if
+  if y > m.screenH
+    y = 0
+  else if y < 0
+    y = m.screenH
+  end if
+  sprite.moveTo(x, y)
+end sub
+
+
+function getWalkingSpriteCells(numCells as integer)
+  walkingBmp = CreateObject("roBitmap", "pkg:/images/walkingsprite.png")
+
+  cellW = 144
+  cellH = 180
+
+  return getBitmapCells(walkingBmp, 0, 0, numCells, cellW, cellH)
+end function
+
+function getBitmapCells(bmp, x, y, numCells, cellW, cellH)
+  cellRegions = []
+  for i = 0 to numCells - 1
+    region = CreateObject("roRegion", bmp, x + i * cellW, y, cellW, cellH)
+    cellRegions.push(region)
+  end for
+  return cellRegions
+end function
+
+
+function createSpriteObject(x, y, cellRegions)
+  return {
+    x: x,
+    y: y,
+    regions: cellRegions,
+    activeRegion: 0,
+    getX: function()
+      return m.x
+    end function,
+    getY: function()
+      return m.y
+    end function,
+    moveTo: function(a, b)
+      m.x = a
+      m.y = b
+    end function,
+    color: getColor()
+  }
 end function

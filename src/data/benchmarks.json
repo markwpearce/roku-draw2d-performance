@@ -1,0 +1,91 @@
+{
+  "screen": {
+    "width": 1280,
+    "height": 720
+  },
+  "maxTestTimeMs": 30000,
+  "testBitmap": "pkg:/images/roku-logo-transparent.png",
+  "functionPerformanceCount": 50,
+  "suites": [
+    {
+      "name": "FunctionSpeed",
+      "enabled": true,
+      "isSlow": true,
+      "tests": [
+        { "name": "RecursionFunction", "function": "recursionFunction" },
+        { "name": "RecursionSub", "function": "recursionSub" },
+        { "name": "Loop", "function": "loop" },
+        { "name": "LoopFuncCall", "function": "loopFuncCall" },
+        { "name": "LoopFuncCallNoReturn", "function": "loopFuncCallNoReturn" },
+        { "name": "LoopSubCall", "function": "loopSubCall" },
+        { "name": "ClassCreate", "function": "classCreate" }
+      ]
+    },
+    {
+      "name": "Draw",
+      "enabled": true,
+      "isSlow": false,
+      "tests": [
+        {
+          "name": "DrawLine",
+          "function": "drawLine",
+          "setup": "screenAlphaOn"
+        },
+        {
+          "name": "DrawRect",
+          "function": "drawRect",
+          "setup": "screenAlphaOn"
+        },
+        {
+          "name": "DrawPoint",
+          "function": "drawPoint",
+          "setup": "screenAlphaOn"
+        },
+        {
+          "name": "DrawObject (no-Alpha)",
+          "function": "drawObject",
+          "setup": "screenAlphaOff"
+        },
+        {
+          "name": "DrawObject (with-Alpha)",
+          "function": "drawObject",
+          "setup": "screenAlphaOn"
+        },
+        {
+          "name": "DrawRotatedObject",
+          "function": "drawRotatedObject",
+          "setup": "screenAlphaOn"
+        },
+        {
+          "name": "DrawScaledObject",
+          "function": "drawScaledObject",
+          "setup": "screenAlphaOn"
+        }
+      ]
+    },
+    {
+      "name": "RegionCreation",
+      "enabled": true,
+      "isSlow": true,
+      "tests": [
+        { "name": "CreateTempBitmap", "function": "createTempBitmap" },
+        { "name": "ReuseBitmap", "function": "reuseBitmap" },
+        {
+          "name": "CreateTempBitmapAndRegion",
+          "function": "createTempBitmapAndRegion"
+        },
+        { "name": "ReuseBitmapAndRegion", "function": "ReuseBitmapAndRegion" }
+      ]
+    },
+    {
+      "name": "Compositing",
+      "enabled": true,
+      "isSlow": true,
+      "tests": [
+        { "name": "CompositorWrap", "function": "testCompositorWrap" },
+        { "name": "CompositorSprites", "function": "testCompositorSprites" },
+        { "name": "ManualSprites", "function": "testManualSprites" }
+      ]
+    }
+  ]
+}
