@@ -13,7 +13,7 @@ The complete results are printed to the console, in CSV format
 Here's the results for a Roku Ultra:
 
 ```
-Roku Draw2d Performance Benchmark Tool - v0.3.1
+Roku Draw2d Performance Benchmark Tool - v0.4.1
 Roku Ultra (4802CA) STB
 Screen Size: 1280x720, Framerate Target: 30fps, Max Test Time (ms): 30000
 Benchmark Name,Test Ran,Total time (ms),Avg Time per Frame (ms),Avg Ops per Frame,Avg Ops per Second,Avg Swap time per Frame (ms),Ops per Frame to reach FPS
