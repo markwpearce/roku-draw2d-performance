@@ -8,35 +8,67 @@ During each test, the test name will appear in the upper right corner, and the c
 
 This app will dynamically scale the amount of draw operations to try to match 30 frames per second.
 
-The complete results are printed to the console.
+The complete results are printed to the console, in CSV format
 
 Here's the results for a Roku Ultra:
 
 ```
-Roku Draw2d Performance Benchmark Tool - v0.1.1
-Recursion:  1775ms,  36ms per frame,  200 ops per frame,  5634 ops per second,  2ms avg swap time,  200 ops per frame to reach target
-DrawLine:  23451ms,  52ms per frame,  222 ops per frame,  4264 ops per second,  39ms avg swap time,  205 ops per frame to reach target
-DrawRect:  4778ms,  47ms per frame,  990 ops per frame,  20929 ops per second,  16ms avg swap time,  990 ops per frame to reach target
-DrawPoint:  2930ms,  35ms per frame,  1190 ops per frame,  34130 ops per second,  0ms avg swap time,  1189 ops per frame to reach target
-DrawObject (no-Alpha):  6084ms,  57ms per frame,  935 ops per frame,  16437 ops per second,  40ms avg swap time,  712 ops per frame to reach target
-DrawObject (with-Alpha):  20486ms,  58ms per frame,  284 ops per frame,  4881 ops per second,  52ms avg swap time,  223 ops per frame to reach target
-DrawRotatedObject:  24244ms,  51ms per frame,  208 ops per frame,  4125 ops per second,  37ms avg swap time,  208 ops per frame to reach target
-DrawScaledObject:  35724ms,  50ms per frame,  141 ops per frame,  2799 ops per second,  41ms avg swap time,  121 ops per frame to reach target
-CreateTempBitmap:  9128ms,  35ms per frame,  38 ops per frame,  1096 ops per second,  0ms avg swap time,  38 ops per frame to reach target
-ReuseBitmap:  8808ms,  36ms per frame,  41 ops per frame,  1135 ops per second,  0ms avg swap time,  41 ops per frame to reach target
-CreateTempBitmapAndRegion:  9133ms,  35ms per frame,  38 ops per frame,  1095 ops per second,  0ms avg swap time,  38 ops per frame to reach target
-ReuseBitmapAndRegion:  8818ms,  36ms per frame,  40 ops per frame,  1134 ops per second,  0ms avg swap time,  40 ops per frame to reach target
-CompositorWrap:  15978ms,  52ms per frame,  33 ops per frame,  626 ops per second,  45ms avg swap time,  31 ops per frame to reach target
+Roku Draw2d Performance Benchmark Tool - v0.4.1
+Roku Ultra (4802CA) STB
+Screen Size: 1280x720, Framerate Target: 30fps, Max Test Time (ms): 30000
+Benchmark Name,Test Ran,Total time (ms),Avg Time per Frame (ms),Avg Ops per Frame,Avg Ops per Second,Avg Swap time per Frame (ms),Ops per Frame to reach FPS
+RecursionFunction,true,1799,37,204,5559,3,204
+RecursionSub,true,1498,36,238,6676,0,238
+Loop,true,1005,36,357,9950,0,357
+LoopFuncCall,true,1301,35,270,7686,0,268
+LoopFuncCallNoReturn,true,1321,36,270,7570,0,266
+LoopSubCall,true,1319,36,270,7582,0,266
+ClassCreate,true,3366,35,103,2971,0,103
+DrawLine,true,23269,52,224,4298,38,160
+DrawRect,true,6372,42,667,15694,19,667
+DrawPoint,true,3157,35,1099,31676,0,1097
+DrawObject (no-Alpha),true,5815,55,952,17197,36,827
+DrawObject (with-Alpha),true,20390,58,282,4904,51,232
+DrawRotatedObject,true,25663,49,190,3897,35,190
+DrawScaledObject,true,30012,47,117,2494,38,117
+CreateTempBitmap,true,9209,35,38,1086,0,38
+ReuseBitmap,true,8594,36,41,1164,0,41
+CreateTempBitmapAndRegion,true,9178,35,38,1090,0,38
+ReuseBitmapAndRegion,true,8746,36,41,1143,0,41
+CompositorWrap (HD),true,15735,51,33,636,45,30
+CompositorWrap (FHD),true,14667,52,35,682,44,31
+CompositorWrap (4k),true,17119,52,30,584,45,27
+CompositorSprites,true,30046,45,13,291,0,13
+ManualSprites,true,30045,45,13,287,0,13
 ```
 
-Each line of output contains the following details:
+In Table Form:
 
-- total time for test
-- actual milliseconds per rendered frame
-- average test operations per frame
-- average operations per second
-- average length of time for swapping frames
-- result of dynamically scaling the number of operations to meet the fps goal
+| Benchmark Name            | Test Ran | Total time (ms) | Avg Time per Frame (ms) | Avg Ops per Frame | Avg Ops per Second | Avg Swap time per Frame (ms) | Ops per Frame to reach FPS |
+| ------------------------- | -------- | --------------- | ----------------------- | ----------------- | ------------------ | ---------------------------- | -------------------------- |
+| RecursionFunction         | true     | 1799            | 37                      | 204               | 5559               | 3                            | 204                        |
+| RecursionSub              | true     | 1498            | 36                      | 238               | 6676               | 0                            | 238                        |
+| Loop                      | true     | 1005            | 36                      | 357               | 9950               | 0                            | 357                        |
+| LoopFuncCall              | true     | 1301            | 35                      | 270               | 7686               | 0                            | 268                        |
+| LoopFuncCallNoReturn      | true     | 1321            | 36                      | 270               | 7570               | 0                            | 266                        |
+| LoopSubCall               | true     | 1319            | 36                      | 270               | 7582               | 0                            | 266                        |
+| ClassCreate               | true     | 3366            | 35                      | 103               | 2971               | 0                            | 103                        |
+| DrawLine                  | true     | 23269           | 52                      | 224               | 4298               | 38                           | 160                        |
+| DrawRect                  | true     | 6372            | 42                      | 667               | 15694              | 19                           | 667                        |
+| DrawPoint                 | true     | 3157            | 35                      | 1099              | 31676              | 0                            | 1097                       |
+| DrawObject (no-Alpha)     | true     | 5815            | 55                      | 952               | 17197              | 36                           | 827                        |
+| DrawObject (with-Alpha)   | true     | 20390           | 58                      | 282               | 4904               | 51                           | 232                        |
+| DrawRotatedObject         | true     | 25663           | 49                      | 190               | 3897               | 35                           | 190                        |
+| DrawScaledObject          | true     | 30012           | 47                      | 117               | 2494               | 38                           | 117                        |
+| CreateTempBitmap          | true     | 9209            | 35                      | 38                | 1086               | 0                            | 38                         |
+| ReuseBitmap               | true     | 8594            | 36                      | 41                | 1164               | 0                            | 41                         |
+| CreateTempBitmapAndRegion | true     | 9178            | 35                      | 38                | 1090               | 0                            | 38                         |
+| ReuseBitmapAndRegion      | true     | 8746            | 36                      | 41                | 1143               | 0                            | 41                         |
+| CompositorWrap (HD)       | true     | 15735           | 51                      | 33                | 636                | 45                           | 30                         |
+| CompositorWrap (FHD)      | true     | 14667           | 52                      | 35                | 682                | 44                           | 31                         |
+| CompositorWrap (4k)       | true     | 17119           | 52                      | 30                | 584                | 45                           | 27                         |
+| CompositorSprites         | true     | 30046           | 45                      | 13                | 291                | 0                            | 13                         |
+| ManualSprites             | true     | 30045           | 45                      | 13                | 287                | 0                            | 13                         |
 
 ## Install
 

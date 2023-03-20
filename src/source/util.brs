@@ -53,6 +53,20 @@ function intScaleIfNeeded(value, testVal, target, buffer = 0.5)
 end function
 
 
+sub drawTextLinesWithBackground(textLines, x, y, width, lineHeight, font)
+
+  numLines = textLines.count()
+  offset = 5
+  height = numLines * lineHeight + 2 * offset
+  m.screen.drawRect(x - offset, y - offset, width + 2 * offset, height, &hFF)
+  i = 0
+  for each line in textLines
+    m.screen.drawText(line, x, y + i * lineHeight, &hFFFFFFFF, font)
+    i++
+  end for
+
+end sub
+
 
 sub drawTextWithBackground(text, x, y, width)
   height = 50
