@@ -80,7 +80,7 @@ sub printHeaderDetails()
 
   m.fullResultText.push("Roku Draw2d Performance Benchmark Tool - v" + appInfo.GetVersion())
   m.fullResultText.push(deviceInfo.GetModelDisplayName() + " (" + deviceInfo.GetModelDetails().modelNumber + ") " + deviceInfo.GetModelType())
-  m.fullResultText.push("Screen Size: " + m.screenW.toStr() + "x" + m.screenH.toStr() + ", Framerate Target: " + m.drawFpsTarget.toStr() + ", Max Test Time (ms): " + m.maxTestTimeMs.toStr())
+  m.fullResultText.push("Screen Size: " + m.screenW.toStr() + "x" + m.screenH.toStr() + ", Framerate Target: " + m.drawFpsTarget.toStr() + "fps, Max Test Time (ms): " + m.maxTestTimeMs.toStr())
   m.fullResultText.push(getCSVHeaderLine())
 
   for each line in m.fullResultText
