@@ -12,6 +12,8 @@ sub main()
   m.maxTestTimeMs = 30000
   fontRegistry = CreateObject("roFontRegistry")
   m.defaultFont = fontRegistry.GetDefaultFont()
+  m.smallFontSize = fontRegistry.GetDefaultFontSize() / 3
+  m.smallFont = fontRegistry.GetDefaultFont(m.smallFontSize, false, false)
   m.screen = CreateObject("roScreen", true, m.screenW, m.screenH)
   m.screen.setAlphaEnable(true)
   m.functionPerfCount = 50
@@ -20,6 +22,9 @@ sub main()
   doDrawTests = true
   doRegionCreationTests = true
   doCompositingTests = true
+
+  m.fullResultText = []
+
   printHeaderDetails()
 
   if doFunctionSpeedTests
@@ -60,6 +65,10 @@ sub main()
     runBenchmark("CompositorSprites", testCompositorSprites, repeat)
     runBenchmark("ManualSprites", testManualSprites, repeat)
   end if
+
+  showResultsOnScreen()
+
+  sleep(2000)
 end sub
 
 
@@ -67,8 +76,16 @@ end sub
 sub printHeaderDetails()
   appInfo = CreateObject("roAppInfo")
   deviceInfo = CreateObject("roDeviceInfo")
-  ? "Roku Draw2d Performance Benchmark Tool - v";appInfo.GetVersion()
-  ? deviceInfo.GetModelDisplayName();" (";deviceInfo.GetModelDetails().modelNumber;") ";deviceInfo.GetModelType()
+
+
+  m.fullResultText.push("Roku Draw2d Performance Benchmark Tool - v" + appInfo.GetVersion())
+  m.fullResultText.push(deviceInfo.GetModelDisplayName() + " (" + deviceInfo.GetModelDetails().modelNumber + ") " + deviceInfo.GetModelType())
+  m.fullResultText.push("Screen Size: " + m.screenW.toStr() + "x" + m.screenH.toStr() + ", Framerate Target: " + m.drawFpsTarget.toStr() + ", Max Test Time (ms): " + m.maxTestTimeMs.toStr())
+  m.fullResultText.push(getCSVHeaderLine())
+
+  for each line in m.fullResultText
+    ? line
+  end for
 end sub
 
 
@@ -130,16 +147,18 @@ sub runBenchmark(benchmarkName, testFunction, repeat, dynamicallyScale = true)
     m.screen.swapBuffers()
     frameCount = 1
   end if
-  if testNotSupported
-    ? benchmarkName;": skipped - not supported"
-    return
-  end if
   totalTime = totalTimer.totalMilliseconds()
-  actualFrameTime = cint(totalTime / frameCount)
-  opsPerFrame = cint(i / frameCount)
-  opsPerSecond = cint(i / (totalTime / 1000))
-  avgSwapTime = cint(totalSwapTime / frameCount)
   m.screen.swapBuffers()
-  ? benchmarkName;": ";totalTime;"ms, ";actualFrameTime;"ms per frame";", ";opsPerFrame;" ops per frame";", ";opsPerSecond;" ops per second, ";avgSwapTime;"ms avg swap time, ";min(opsPerSwap, opsPerFrame);" ops per frame to reach target"
+  benchmarkResult = buildBenchmarkResult(benchmarkName, not testNotSupported, totalTime, frameCount, i, totalSwapTime, opsPerSwap)
+  resultCsvLine = getCSVResultLine(benchmarkResult)
+  ? resultCsvLine
+  m.fullResultText.push(resultCsvLine)
 end sub
 
+
+
+sub showResultsOnScreen()
+  offset = 50
+  drawTextLinesWithBackground(m.fullResultText, offset, offset, m.screenW - offset * 2, m.smallFontSize, m.smallFont)
+  m.screen.swapBuffers()
+end sub
